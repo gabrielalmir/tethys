@@ -66,9 +66,3 @@ O resultado do PI será apresentado em um seminário. Cada grupo terá de 20 min
 - Projeto Pedagógico do Curso de Tecnologia em Desenvolvimento de Software Multiplataforma, da Fatec Itapira, em [link](https://www.fatecitapira.edu.br/files/cursos/proj_ped_DSM.pdf), acessado em março de 2022.
 - Manual de Projetos Interdisciplinares para o CST em Desenvolvimento de Software Multiplataforma, versão 1.0.0, de 22/04/2021, elaborado pela CESU – Unidade de Ensino Superior de Graduação, do Centro Paula Souza.
 
-## Integrantes do Projeto
-
-- Gabriel Almir <@gabrielalmir>
-- Juliano Alessandro <@julianoAlessandro>
-- Celso William <@cwilliam956>
-- Gustavo Brianti <@ogustavobrianti>
