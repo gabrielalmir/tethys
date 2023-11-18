@@ -12,7 +12,6 @@ datasource db {
 
 model User {
   id        String   @id @default(cuid()) @map("id")
-  name      String   @map("nome")
   email     String   @unique @map("email")
   password  String   @map("senha")
   createdAt DateTime @default(now()) @map("criado_em")

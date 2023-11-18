@@ -48,17 +48,15 @@ app.post("/login", async (request, reply) => {
 
 app.post("/register", async (request, reply) => {
   const createUserSchema = z.object({
-    name: z.string(),
     email: z.string().email(),
     password: z.string().min(6),
   });
 
-  const { name, email, password } = createUserSchema.parse(request.body);
+  const { email, password } = createUserSchema.parse(request.body);
   const hashedPassword = await bcrypt.hash(password, 10);
 
   await prisma.user.create({
     data: {
-      name,
       email,
       password: hashedPassword
     },
