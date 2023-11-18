@@ -5,7 +5,7 @@ body {
     background-repeat: no-repeat;
 }
 
-#login {
+.sign-form {
     display: flex;
     align-items: center;
     padding-top: 40px;
@@ -13,48 +13,59 @@ body {
     min-height: 100vh;
 }
 
-#login .form-signin {
+.sign-form .form-signin {
     width: 100%;
     max-width: 330px;
     padding: 15px;
     margin: auto;
 }
 
-#login .form-signin .checkbox {
+.sign-form .form-signin input {
+    background-color: rgb(255 255 255 / 10%);
+    border: 4px solid rgb(255 255 255 / 10%);
+    color: white;
+}
+
+/* change outline color of bootstrap form control */
+.sign-form .form-signin input:focus {
+    border-color: #fff;
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+}
+
+.sign-form .form-signin .checkbox {
     font-weight: 400;
 }
 
-#login .form-signin .form-floating:focus-within {
+.sign-form .form-signin .form-floating:focus-within {
     z-index: 2;
 }
 
 .form-floating input {
-    background-color: rgba(255, 255, 255, 0.1);
-    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
-    border: none;
+    box-shadow: none;
+    border: 4px solid rgb(255 255 255 / 10%);
 }
 
 .form-floating label {
     color: white;
 }
 
-#login .form-signin input[type="email"] {
+.sign-form .form-signin input[type="email"] {
     margin-bottom: -1px;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
 }
 
-#login .form-signin input[type="password"] {
+.sign-form .form-signin input[type="password"] {
     margin-bottom: -1px;
     border-radius: 0;
 }
 
-#login .form-signin input[type="number"] {
+.sign-form .form-signin input[type="number"] {
     margin-bottom: -1px;
     border-radius: 0;
 }
 
-#login .form-signin input[type="tel"] {
+.sign-form .form-signin input[type="tel"] {
     margin-bottom: 10px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;

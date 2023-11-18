@@ -15,8 +15,8 @@
     <link rel="stylesheet" href="css/login.css">
   </head>
   <body>
-    <div class="backdrop">
-      <section id="login">
+    <div class="backdrop" id="register">
+      <section class="sign-form">
         <main class="text-center form-signin">
           <a href="/"><img src="img/logo.jpg" alt="Logo" width="100" class="mb-3" /></a>
           <form>
@@ -25,6 +25,7 @@
                 type="email"
                 class="form-control"
                 id="email"
+                name="email"
                 placeholder="nome@email.com"
                 required
               />
@@ -35,6 +36,7 @@
                 type="password"
                 class="form-control"
                 id="password"
+                name="password"
                 placeholder="senha"
                 required
               />
@@ -46,6 +48,7 @@
                 type="number"
                 class="form-control"
                 id="cep"
+                name="cep"
                 placeholder="cep"
                 required
               />
@@ -57,6 +60,7 @@
                 type="tel"
                 class="form-control"
                 id="telefone"
+                name="phone"
                 placeholder="telefone"
                 required
               />
@@ -76,5 +80,7 @@
         </main>
       </section>
     </div>
+
+    <script src="js/main.js"></script>
   </body>
 </html>
