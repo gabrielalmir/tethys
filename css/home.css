@@ -17,7 +17,7 @@ body {
     color: #dfdfdf;
 }
 
-#backdrop {
+.backdrop {
   backdrop-filter: brightness(60%);
   width: 100vw;
   height: 100vh;
