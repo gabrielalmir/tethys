@@ -2,12 +2,13 @@ import { PrismaClient } from "@prisma/client";
 import fastify from "fastify";
 import { z } from "zod";
 
+import fastifyCors from '@fastify/cors';
 import bcrypt from 'bcrypt';
 
 const app = fastify();
 const prisma = new PrismaClient();
 
-app.register(require('fastify-cors'), {
+app.register(fastifyCors, {
   origin: '*',
   methods: ['GET', 'POST']
 });
