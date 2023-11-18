@@ -19,12 +19,13 @@
       <div class="sign-form">
         <main class="text-center form-signin">
           <a href="/"><img src="img/logo.jpg" alt="Logo" width="100" class="mb-3" /></a>
-          <form>
+          <form id="login" method="post">
             <div class="form-floating">
               <input
                 type="email"
                 class="form-control"
                 id="email"
+                name="email"
                 placeholder="nome@email.com"
                 required
               />
@@ -36,6 +37,8 @@
                 class="form-control mb-3"
                 style="border-bottom-left-radius: 6px; border-bottom-right-radius: 6px"
                 id="password"
+                name="password"
+                min="6"
                 placeholder="senha"
                 required
               />
@@ -54,4 +57,6 @@
       </div>
     </div>
   </body>
+
+  <script src="js/main.js"></script>
 </html>

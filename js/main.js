@@ -3,6 +3,20 @@ const $registerForm = document.getElementById('register');
 const $loginForm = document.getElementById('login');
 
 function main() {
+    const currentPath = window.location.pathname;
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    if (
+        user &&
+        (currentPath === "/login.html" || currentPath === "/register.html")
+    ) {
+        window.location.href = "dashboard.html";
+    }
+
+    if (!user && currentPath === '/dashboard.html') {
+        window.location.href = "login.html";
+    }
+
     if ($registerForm) {
         $registerForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -27,17 +41,16 @@ function login(e) {
 
     fetch(`${baseURL}/login`, {
         method: 'POST',
-        body: JSON.stringify({ username: email, password }),
+        body: JSON.stringify({ email: email, password }),
         headers: {
             'Content-Type': 'application/json'
         }
     })
         .then(res => res.json())
-        .then(data => {
-            console.log(data);
-            if (data.status === 'success') {
-                localStorage.setItem('user', JSON.stringify(data.user));
-                window.location.href = 'dashboard.html';
+        .then(user => {
+            if (user) {
+                localStorage.setItem('user', JSON.stringify(user));
+                window.location.href = "dashboard.html";
             }
         })
         .catch(err => console.error(err));
@@ -59,8 +72,11 @@ function register(e) {
             'Content-Type': 'application/json'
         }
     })
-        .then(res => res.json())
-        .then(data => console.log(data))
+        .then(res => {
+            if (res.status === 201) {
+                window.location.href = "login.html";
+            }
+        })
         .catch(err => console.error(err));
 }
 

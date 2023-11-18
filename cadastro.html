@@ -15,11 +15,11 @@
     <link rel="stylesheet" href="css/login.css">
   </head>
   <body>
-    <div class="backdrop" id="register">
+    <div class="backdrop">
       <section class="sign-form">
         <main class="text-center form-signin">
           <a href="/"><img src="img/logo.jpg" alt="Logo" width="100" class="mb-3" /></a>
-          <form>
+          <form id="register" method="post">
             <div class="form-floating">
               <input
                 type="email"
@@ -37,6 +37,7 @@
                 class="form-control"
                 id="password"
                 name="password"
+                min="6"
                 placeholder="senha"
                 required
               />
