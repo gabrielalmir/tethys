@@ -1,0 +1,63 @@
+* {
+    font-family: "Open Sans", sans-serif;
+    font-size: 16px;
+}
+
+html,
+body {
+    height: 100vh;
+}
+
+body {
+    background-image: url("../img/fundo.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+
+    color: #dfdfdf;
+}
+
+#backdrop {
+  backdrop-filter: brightness(60%);
+  width: 100vw;
+  height: 100vh;
+}
+
+.nav-link, .nav-link:active, .nav-link:focus {
+    color: #ccc;
+
+    border-bottom: 4px solid transparent;
+}
+
+.nav-link.active {
+    color: white;
+}
+
+.nav-link:hover {
+    color: #ccc;
+    border-bottom-color: #ccc;
+}
+
+.cover-container {
+  max-width: 60em;
+}
+
+.cover h1 {
+    font-size: 4rem;
+    font-weight: bold;
+}
+
+.cover p {
+    font-size: 1.4rem;
+    text-wrap: pretty;
+}
+
+#cta-button {
+    background-color: transparent;
+    border: 2px solid white;
+    color: #dfdfdf;
+    font-size: 1.5rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    text-decoration: none;
+}
