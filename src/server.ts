@@ -50,16 +50,20 @@ app.post("/register", async (request, reply) => {
   const createUserSchema = z.object({
     email: z.string().email(),
     password: z.string().min(6),
+    postalCode: z.string().length(8).optional(),
+    phoneNumber: z.string().length(11).optional(),
   });
 
-  const { email, password } = createUserSchema.parse(request.body);
+  const { email, password, postalCode, phoneNumber } = createUserSchema.parse(request.body);
   const hashedPassword = await bcrypt.hash(password, 10);
 
   await prisma.user.create({
     data: {
       email,
-      password: hashedPassword
-    },
+      password: hashedPassword,
+      postalCode,
+      phoneNumber,
+    }
   });
 
   return reply.status(201).send();
