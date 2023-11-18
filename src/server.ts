@@ -7,6 +7,11 @@ import bcrypt from 'bcrypt';
 const app = fastify();
 const prisma = new PrismaClient();
 
+app.register(require('fastify-cors'), {
+  origin: '*',
+  methods: ['GET', 'POST']
+});
+
 app.get("/users", async () => {
   const users = await prisma.user.findMany();
   return { users };
