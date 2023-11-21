@@ -1,0 +1,1 @@
+type HttpClient = typeof fetch;

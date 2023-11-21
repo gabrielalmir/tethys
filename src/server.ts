@@ -1,81 +1,71 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import fastify from "fastify";
 import cron from "node-cron";
+import { BrasilApiService } from "./services/brasil-api";
+import { SmsService } from "./services/sms-api";
+import { WeatherService } from "./services/weather.api";
 
 const app = fastify();
 const prisma = new PrismaClient();
 
-const brasilApi = "https://brasilapi.com.br/api";
-const rainfallApi = "https://tethys-api-pluviometrico.onrender.com";
-const envioSmsApi = "https://tethys-sms.onrender.com";
-
-cron.schedule('*/30 * * * * *', async () => {
+cron.schedule('*/10 * * * * *', async () => {
   const users = await prisma.user.findMany()
 
   console.log(`Enviando SMS para ${users.length} usuários`)
 
   users.map(async (user) => {
-    console.log(`Enviando SMS para o usuário ${user.id}`)
-    const { postalCode, phoneNumber } = user
+    try {
+      validateUser(user);
 
-    if (!postalCode || !phoneNumber) {
-      console.log(`Usuário ${user.id} não possui CEP ou telefone cadastrado`)
-      return;
-    }
+      const { postalCode, phoneNumber } = user;
 
-    const brasilUrl = `${brasilApi}/cep/v2/${postalCode}`;
-    const brasilResponse = await fetch(brasilUrl);
+      console.log(`Buscando dados para o CEP ${postalCode}`)
 
-    if (brasilResponse.status !== 200) {
-      console.log(`Não foi possível encontrar o CEP ${postalCode} em ${brasilUrl}`)
-      return;
-    }
+      const brasilApiService = new BrasilApiService(fetch);
+      const { latitude, longitude } = await brasilApiService.getPostalCode(postalCode);
 
-    const json = await brasilResponse.json();
-    const { coordinates } = json.location;
-
-    if (!coordinates) {
-      console.log(`Não foi possível encontrar as coordenadas para o CEP ${postalCode}`)
-      return;
-    }
-
-    const { latitude, longitude } = coordinates;
-
-    const rainfallUrl = `${rainfallApi}/weather/1,${latitude},${longitude}`;
-    const rainfallResponse = await fetch(rainfallUrl);
-
-    console.log(`Chuva para o CEP ${postalCode}: ${rainfallResponse.status}`)
-
-    if (rainfallResponse.status === 200) {
-      const rainfallResults = await rainfallResponse.json();
-      const { value } = rainfallResults[0];
-
-      if (value >= 30) {
-        const url = `${envioSmsApi}/enviar-dados`;
-        const message = `Alerta de alagamento! O CEP ${postalCode} está com ${value}mm de chuva.`
-        const localizedPhoneNumber = phoneNumber.includes("+") ? phoneNumber : `+55${phoneNumber}`
-
-        console.log(`Enviando SMS para o usuário ${user.id}`)
-
-        const result = await fetch(url, {
-          method: "post",
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: new URLSearchParams({ numero: localizedPhoneNumber, texto: message }),
-        });
-
-        if (result.status === 200) {
-          console.log(`SMS enviado para o usuário ${user.id}`)
-        } else {
-          console.log(`Não foi possível enviar SMS para o usuário ${user.id}`)
-        }
+      if (!latitude || !longitude) {
+        throw new Error("Não foi possível encontrar as coordenadas do CEP");
       }
 
-      console.log(`Chuva para o CEP ${postalCode}: ${value}mm`)
+      console.log(`Buscando dados de chuva para latitude ${latitude} e longitude ${longitude}`)
+
+      const weatherService = new WeatherService(fetch);
+      const { rainfall } = await weatherService.getRainfall(
+        latitude,
+        longitude
+      );
+
+      if (rainfall !== 0 && !rainfall) {
+        console.log(await weatherService.getRainfall(latitude, longitude))
+        throw new Error("Não foi possível encontrar o índice de chuva");
+      }
+
+      console.log(`Enviando SMS para ${phoneNumber}`)
+
+      const smsService = new SmsService(fetch);
+      await smsService.sendSms(phoneNumber, `Olá! O índice de chuva na sua região é de ${rainfall} mm`);
+
+      console.log(`SMS enviado para ${phoneNumber}`);
+    } catch (error: any) {
+      console.log(error.message);
     }
   })
 });
+
+function validateUser(user: User) {
+  if (!user) {
+    throw new Error("Usuário não encontrado");
+  }
+
+  if (!user.postalCode) {
+    throw new Error("CEP não encontrado");
+  }
+
+  if (!user.phoneNumber) {
+    throw new Error("Número de telefone não encontrado");
+  }
+}
 
 app
   .listen({
