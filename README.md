@@ -1,5 +1,3 @@
-# tethys
-Projeto de Integração Fatec Itapira: Sistema de Alerta de Alagamentos - 3° Semestre
 # PI3-AlertaAlagamento.
 Projeto Integrador - Cidades Inteligentes: Desenvolvimento de um Sistema de Alerta
 
