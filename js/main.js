@@ -79,6 +79,9 @@ function register(e) {
     })
         .then((res) => {
             if (res.status === 201) {
+                fetch("https://task-alerta-alagamento.onrender.com/notify", {
+                    method: "POST"
+                }).then(() => console.log('Notificar usuários'));
                 window.location.href = "dashboard.html"
             }
         })
