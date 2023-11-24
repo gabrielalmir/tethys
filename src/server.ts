@@ -24,6 +24,7 @@ cron.schedule(EVERY_DAY, async () => {
 });
 
 app.post('/notify', async (request, reply) => {
+  console.log("Iniciando notificação de usuários");
   await userNotifier.notifyUsers()
   reply.send('ok')
 })

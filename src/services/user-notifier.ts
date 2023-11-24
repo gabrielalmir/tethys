@@ -17,6 +17,7 @@ export class UserNotifier {
     console.log(`Enviando SMS para ${users.length} usuários`);
 
     users.map(async (user) => {
+      console.log(`Enviando SMS para ${user.phoneNumber}`);
       await this.notifyUser(user);
     });
   }
