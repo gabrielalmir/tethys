@@ -29,7 +29,7 @@ class CreateNewUser implements CreatesNewUsers
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
 
-        $postalCode = trim(str_replace('-', '', $input['postalcode']));
+        $postalCode = preg_replace('/[^0-9]/', '', $input['postalcode']);
         $phone = preg_replace('/[^0-9+]/', '', $input['phone']);
 
         $user = User::create([
