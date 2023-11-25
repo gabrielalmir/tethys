@@ -1,10 +1,10 @@
 FROM ubuntu:22.04
 
 # Atualiza o sistema
-RUN apt-get update && apt-get upgrade -y
+RUN apt update && apt upgrade -y
 
 # Instala as dependências
-apt-get install -y \
+apt install -y \
         software-properties-common \
         curl \
         unzip \
@@ -17,7 +17,7 @@ apt-get install -y \
 
 # Instala o PHP 8
 RUN add-apt-repository ppa:ondrej/php
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
         php8.0 \
         php8.0-cli \
         php8.0-common \
