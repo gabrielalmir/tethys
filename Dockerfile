@@ -25,3 +25,6 @@ CMD ["/start.sh"]
 # Expose port 80
 EXPOSE 80
 
+# Expose port 443
+EXPOSE 443
+
