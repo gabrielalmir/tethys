@@ -2,6 +2,7 @@
 
 namespace App\Actions\Fortify;
 
+use App\Console\Commands\NotifyUsersCommand;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -29,14 +30,19 @@ class CreateNewUser implements CreatesNewUsers
         ])->validate();
 
         $postalCode = trim(str_replace('-', '', $input['postalcode']));
-        $phone = trim(str_replace('-', '', $input['phone']));
+        $phone = preg_replace('/[^0-9+]/', '', $input['phone']);
 
-        return User::create([
+        $user = User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
             'postalcode' => $postalCode,
             'phone' => $phone,
         ]);
+
+        $notifier = new NotifyUsersCommand();
+        $notifier->notifyUser($user);
+
+        return $user;
     }
 }

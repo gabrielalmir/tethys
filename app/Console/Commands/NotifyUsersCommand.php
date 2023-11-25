@@ -53,14 +53,12 @@ class NotifyUsersCommand extends Command
      *
      * @param User $user
      */
-    private function notifyUser(User $user)
+    public function notifyUser(User $user)
     {
         $url = "{$this->baseUrl}/notify";
 
         Http::async()->post($url, [
             'email' => $user->email,
         ]);
-
-        $this->info("User {$user->email} notified.");
     }
 }
