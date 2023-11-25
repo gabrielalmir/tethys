@@ -62,13 +62,12 @@ export class UserNotifier {
         throw new Error("Número de telefone não encontrado");
       }
 
-      let message = `Olá! O índice de chuva na sua região é de ${rainfall} mm`;
-
-      if (rainfall >= 30) {
-        message = `Olá! Cuidado! O índice de chuva na sua região é de ${rainfall} mm`;
-      } else if (rainfall >= 100) {
-        message = `Olá! Risco de enchente! O índice de chuva na sua região é de ${rainfall} mm`;
-      }
+      let message = `
+        Olá, ${user.name}!\n
+        O índice de chuva para o CEP ${postalcode} é de ${rainfall}mm.\n
+        Tenha um bom dia!\n\n
+        Equipe Tethys - Alerta de Alagamentos
+      `;
 
       await this.smsService.sendSms(phone, message);
 
