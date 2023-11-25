@@ -88,7 +88,7 @@ text-decoration: none;
                 <header class="container mb-auto d-flex justify-content-between">
                     <h3 class="masthead-brand">Tethys</h3>
                     <nav class="nav justify-content-center">
-                        <a class="nav-link active" href="{{ route('welcome') }}">Início</a>
+                        <a class="nav-link active" href="/">Início</a>
                         @if (Auth::check())
                         <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
                         @else
