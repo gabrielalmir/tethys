@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite';
 import laravel, { refreshPaths } from 'laravel-vite-plugin';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
     plugins: [
@@ -12,6 +12,7 @@ export default defineConfig({
                 ...refreshPaths,
                 'app/Livewire/**',
             ],
+            detectTls: true
         }),
     ],
 });
