@@ -24,8 +24,12 @@ RUN cd /var/www/html
 # Install composer dependencies
 RUN composer install
 
+# Generate the migration files
+RUN php artisan migrate --force
+
+# Install npm dependencies
+RUN npm install && npm run build
+
 # Expose port 80
 EXPOSE 80
 
-# Run the start script
-CMD ["/start.sh"]
