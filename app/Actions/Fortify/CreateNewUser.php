@@ -23,13 +23,20 @@ class CreateNewUser implements CreatesNewUsers
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => $this->passwordRules(),
+            'postalcode' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'max:255'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
+
+        $postalCode = trim(str_replace('-', '', $input['postalcode']));
+        $phone = trim(str_replace('-', '', $input['phone']));
 
         return User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
+            'postalcode' => $postalCode,
+            'phone' => $phone,
         ]);
     }
 }
