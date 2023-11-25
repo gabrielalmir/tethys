@@ -88,10 +88,6 @@ RUN rsync -ar /var/www/html/public-npm/ /var/www/html/public/ \
     && rm -rf /var/www/html/public-npm \
     && chown -R www-data:www-data /var/www/html/public
 
-
-# Add cron job to run Laravel scheduler
-RUN * * * * * cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1
-
 EXPOSE 8080
 
 ENTRYPOINT ["/entrypoint"]
