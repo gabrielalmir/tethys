@@ -30,6 +30,12 @@ RUN php artisan migrate --force
 # Install npm dependencies
 RUN npm install && npm run build
 
+# Cache the config
+RUN php artisan config:cache
+
+# Cache the routes
+RUN php artisan route:cache
+
 # Expose port 80
 EXPOSE 80
 
