@@ -28,6 +28,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN docker-php-ext-install zip
 
+RUN composer install
 RUN ./vendor/bin/sail up -d
 
 EXPOSE 80
