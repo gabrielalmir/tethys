@@ -1,4 +1,4 @@
-FROM FROM php:8.2-apache
+FROM php:8.2-apache
 
 #instalar modulos do Apache
 RUN a2enmod headers \
