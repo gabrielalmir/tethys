@@ -68,7 +68,7 @@ class User extends Authenticatable
     {
         $url = "{$this->baseUrl}/notify";
 
-        Http::async()->post($url, [
+        Http::post($url, [
             'email' => $this->email,
         ]);
     }
