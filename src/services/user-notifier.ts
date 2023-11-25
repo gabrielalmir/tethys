@@ -24,6 +24,7 @@ export class UserNotifier {
 
   public async notifyUser(user: users) {
     try {
+      const lakeVolume = await this.weatherService.getLakeVolume();
       this.validateUser(user);
 
       const { postalcode, phone } = user;
@@ -62,12 +63,15 @@ export class UserNotifier {
         throw new Error("Número de telefone não encontrado");
       }
 
-      let message = `
-Olá, ${user.name}!\n
-O índice de chuva para o CEP ${postalcode} é de ${rainfall}mm.\n
-Tenha um bom dia!\n\n
-Equipe Tethys - Alerta de Alagamentos
-      `;
+      let message = `Olá, ${user.name}!\nO índice de chuva para o CEP ${postalcode} é de ${rainfall}mm.\n`;
+
+      if (lakeVolume.volume > 80) {
+        message += `Por favor, fique atento ao nível do lago, que está em ${lakeVolume.volume}%.\n`;
+      } else {
+        message += `O nível do lago está em ${lakeVolume.volume}%.`;
+      }
+
+      message += `\n\nAtenciosamente,\nEquipe Tethys`;
 
       await this.smsService.sendSms(phone, message);
 

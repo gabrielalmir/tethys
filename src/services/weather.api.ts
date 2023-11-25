@@ -21,4 +21,9 @@ export class WeatherService {
 
     return { rainfall };
   }
+
+  async getLakeVolume() : Promise<{ volume: number }> {
+    const random = Math.floor(Math.random() * 100);
+    return { volume: random };
+  }
 }
