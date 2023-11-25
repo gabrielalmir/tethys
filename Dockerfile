@@ -26,8 +26,7 @@ RUN cd /var/www/html
 # Install composer dependencies
 RUN composer install
 
-# Generate the application key
-RUN php artisan key:generate
+# Generate the migration files
 RUN php artisan migrate --force
 
 # Install npm dependencies
