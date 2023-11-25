@@ -1,32 +1,56 @@
-FROM php:8.2-apache
+FROM ubuntu:22.04
 
-#instalar modulos do Apache
-RUN a2enmod headers \
-    && a2enmod rewrite
+# Atualiza o sistema
+RUN apt-get update && apt-get upgrade -y
 
-#Copia a aplicação para o root do apache
-COPY ./ /var/www/html
+# Instala as dependências
+apt-get install -y \
+        software-properties-common \
+        curl \
+        unzip \
+        git \
+        libonig-dev \
+        libzip-dev \
+        zip \
+        unzip \
+        supervisor
 
-#Instalar  mongodb,driver do php, limpeza do temps
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends openssl libssl-dev libcurl4-openssl-dev \
-    && cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini \
-    && echo "extension=pgsql.so" >> /usr/local/etc/php/php.ini \
-    && echo "extension=pdo_pgsql.so" >> /usr/local/etc/php/php.ini \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# Instala o PHP 8
+RUN add-apt-repository ppa:ondrej/php
+RUN apt-get update && apt-get install -y \
+        php8.0 \
+        php8.0-cli \
+        php8.0-common \
+        php8.0-curl \
+        php8.0-fpm \
+        php8.0-gd \
+        php8.0-intl \
+        php8.0-mbstring \
+        php8.0-mysql \
+        php8.0-pgsql \
+        php8.0-sqlite3 \
+        php8.0-xml \
+        php8.0-zip \
+        php8.0-bcmath \
+        php8.0-redis \
+        php8.0-memcached \
+        php8.0-imagick \
+        php8.0-xdebug
 
-    #Instalar o composer
+# Instala o Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-RUN apt-get update && apt-get install -y \
-    zlib1g-dev \
-    libzip-dev \
-    unzip
+# Instala o Laravel Sail
+RUN composer global require laravel/sail
 
-RUN docker-php-ext-install zip
+# Executar composer install --no-dev
+RUN composer install --no-dev
 
-RUN composer install
-RUN ./vendor/bin/sail up -d
+# Adiciona o diretório do composer no PATH
+ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
+# Expor porta 80 para o servidor web
 EXPOSE 80
+
+# CMD para iniciar o Laravel Sail
+CMD ["sail", "up"]
