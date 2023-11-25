@@ -3,7 +3,14 @@ import { BrasilApiService } from "./brasil-api";
 import { SmsService } from "./sms-api";
 import { WeatherService } from "./weather.api";
 
+import { InfluxDBClient, Point } from "@influxdata/influxdb3-client";
+
 export class UserNotifier {
+  private influxdb = new InfluxDBClient({
+    host: "https://us-east-1-1.aws.cloud2.influxdata.com",
+    token: process.env.INFLUXDB_TOKEN,
+  });
+
   constructor(
     private brasilApiService: BrasilApiService,
     private weatherService: WeatherService,
@@ -20,6 +27,10 @@ export class UserNotifier {
       console.log(`Enviando SMS para ${user.phone}`);
       await this.notifyUser(user);
     });
+
+    console.log(`SMS enviado para ${users.length} usuários`);
+
+    this.influxdb.close();
   }
 
   public async notifyUser(user: users) {
@@ -35,16 +46,20 @@ export class UserNotifier {
         throw new Error("CEP não encontrado");
       }
 
-      const { latitude, longitude } = await this.brasilApiService.getPostalCode(
+      const postalCodeData = await this.brasilApiService.getPostalCode(
         postalcode
       );
+
+      const { latitude, longitude } = postalCodeData.location.coordinates;
 
       if (!latitude || !longitude) {
         throw new Error("Não foi possível encontrar as coordenadas do CEP");
       }
 
+      const tagCityNeightborhood = `${postalCodeData.city}_${postalCodeData.neighborhood}`.toUpperCase();
+
       console.log(
-        `Buscando dados de chuva para latitude ${latitude} e longitude ${longitude}`
+        `Buscando dados de chuva para ${tagCityNeightborhood} (${latitude}, ${longitude})`
       );
 
       const { rainfall } = await this.weatherService.getRainfall(
@@ -76,6 +91,22 @@ export class UserNotifier {
       await this.smsService.sendSms(phone, message);
 
       console.log(`SMS enviado para ${phone}`);
+
+      const points = [
+        Point.measurement("notifications")
+        .setStringField("postal_code", postalcode)
+        .setStringField("city", postalCodeData.city)
+        .setStringField("neighborhood", postalCodeData.neighborhood)
+        .setStringField("state", postalCodeData.state)
+        .setIntegerField("rainfall", rainfall)
+        .setIntegerField("lake_volume", lakeVolume.volume)
+        .setTimestamp(new Date())
+      ]
+
+      this.influxdb.write(points, "tethys")
+        .then(() => console.log("Dados enviados para o InfluxDB"))
+
+
     } catch (error: any) {
       console.log(error.message);
     }

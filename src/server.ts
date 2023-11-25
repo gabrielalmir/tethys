@@ -14,7 +14,7 @@ const userNotifier = new UserNotifier(
   new BrasilApiService(fetch),
   new WeatherService(fetch),
   new SmsService(fetch),
-  new PrismaClient()
+  new PrismaClient(),
 );
 
 const prisma = new PrismaClient();

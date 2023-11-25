@@ -1,27 +1,36 @@
+export interface BrasilApiCep {
+  cep:          string;
+  state:        string;
+  city:         string;
+  neighborhood: string;
+  street:       string;
+  service:      string;
+  location:     Location;
+}
+
+export interface Location {
+  type:        string;
+  coordinates: Coordinates;
+}
+
+export interface Coordinates {
+  longitude: string;
+  latitude:  string;
+}
+
 export class BrasilApiService {
   private baseURL = "https://brasilapi.com.br/api";
 
   constructor(private http: HttpClient) {}
 
-  async getPostalCode(postalCode: string): Promise<{ latitude: string, longitude: string }> {
+  async getPostalCode(postalCode: string): Promise<BrasilApiCep> {
     const brasilUrl = `${this.baseURL}/cep/v2/${postalCode}`;
     const brasilResponse = await this.http(brasilUrl);
 
     if (brasilResponse.status !== 200) {
-      console.log(`Não foi possível encontrar o CEP ${postalCode} em ${brasilUrl}`)
-      return { latitude: '', longitude: '' }
+      throw new Error(`Não foi possível encontrar o CEP ${postalCode}`);
     }
 
-    const json = await brasilResponse.json();
-    const { coordinates } = json.location;
-
-    if (!coordinates) {
-      console.log(`Não foi possível encontrar as coordenadas para o CEP ${postalCode}`)
-      return { latitude: '', longitude: '' }
-    }
-
-    const { latitude, longitude } = coordinates;
-
-    return { latitude, longitude };
+    return await brasilResponse.json();
   }
 }
