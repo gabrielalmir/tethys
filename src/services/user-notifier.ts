@@ -63,10 +63,10 @@ export class UserNotifier {
       }
 
       let message = `
-        Olá, ${user.name}!\n
-        O índice de chuva para o CEP ${postalcode} é de ${rainfall}mm.\n
-        Tenha um bom dia!\n\n
-        Equipe Tethys - Alerta de Alagamentos
+Olá, ${user.name}!\n
+O índice de chuva para o CEP ${postalcode} é de ${rainfall}mm.\n
+Tenha um bom dia!\n\n
+Equipe Tethys - Alerta de Alagamentos
       `;
 
       await this.smsService.sendSms(phone, message);

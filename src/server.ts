@@ -19,28 +19,39 @@ const userNotifier = new UserNotifier(
 
 const prisma = new PrismaClient();
 
-app.post('/notify', async (request, reply) => {
+app.post("/notify", async (request, reply) => {
   const createNotificationSchema = z.object({
     email: z.string().email(),
-  })
+  });
 
   const { email } = createNotificationSchema.parse(request.body);
 
-  return queueUserNotification(email);
+  // Não aguardar a notificação aqui, apenas enfileirar
+  queueUserNotification(email);
+
+  // Responder imediatamente, sem esperar pela notificação
+  return { message: "Notificação enfileirada com sucesso" };
 });
 
 async function queueUserNotification(email: string) {
-  console.log(`Enviando notificação para ${email}`);
-  const user = await prisma.users.findFirst({ where: { email } });
+  console.log(`Enfileirando notificação para ${email}`);
 
-  if (!user) {
-    return { error: 'Usuário não encontrado' }
-  }
+  // Processo assíncrono em segundo plano
+  setImmediate(async () => {
+    const user = await prisma.users.findFirst({ where: { email } });
 
-  await userNotifier.notifyUser(user);
+    if (!user) {
+      console.error("Usuário não encontrado");
+      return;
+    }
 
-  return { message: 'Notificação enviada com sucesso' }
+    // Notificar o usuário
+    await userNotifier.notifyUser(user);
+
+    console.log(`Notificação enviada para ${email}`);
+  });
 }
+
 
 app
   .listen({
