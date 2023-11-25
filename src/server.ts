@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import fastify from "fastify";
 
+import { fastifyCors } from "@fastify/cors";
 import { BrasilApiService } from "./services/brasil-api";
 import { SmsService } from "./services/sms-api";
 import { UserNotifier } from "./services/user-notifier";
@@ -18,6 +19,10 @@ const userNotifier = new UserNotifier(
 );
 
 const prisma = new PrismaClient();
+
+app.register(fastifyCors, {
+  origin: "*"
+});
 
 app.post("/notify", async (request, reply) => {
   const createNotificationSchema = z.object({
