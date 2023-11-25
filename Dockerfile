@@ -9,10 +9,8 @@ ENV PHP_ERRORS_STDERR 1
 ENV RUN_SCRIPTS 1
 ENV REAL_IP_HEADER 1
 
-# Laravel config
-ENV APP_ENV production
-ENV APP_DEBUG false
 ENV LOG_CHANNEL stderr
+ENV DB_CONNECTION pgsql
 
 # Allow composer to run as root
 ENV COMPOSER_ALLOW_SUPERUSER 1
@@ -26,11 +24,8 @@ RUN cd /var/www/html
 # Install composer dependencies
 RUN composer install
 
-# Generate the migration files
-RUN php artisan migrate --force
-
-# Install npm dependencies
-RUN npm install && npm run build
-
 # Expose port 80
 EXPOSE 80
+
+# Run the start script
+CMD ["/start.sh"]
