@@ -22,3 +22,6 @@ RUN apk add --update nodejs npm
 # Execute start script
 CMD ["/start.sh"]
 
+# Expose port 80
+EXPOSE 80
+
