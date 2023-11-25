@@ -10,9 +10,7 @@ COPY ./ /var/www/html
 #Instalar  mongodb,driver do php, limpeza do temps
 RUN apt-get update \
     && apt-get install -y --no-install-recommends openssl libssl-dev libcurl4-openssl-dev \
-    && pecl install mongodb \
     && cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini \
-    && echo "extension=mongodb.so" >> /usr/local/etc/php/php.ini \
     && echo "extension=pgsql.so" >> /usr/local/etc/php/php.ini \
     && echo "extension=pdo_pgsql.so" >> /usr/local/etc/php/php.ini \
     && apt-get clean \
