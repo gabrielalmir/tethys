@@ -20,4 +20,6 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 # Install node and npm for Vite
 RUN apk add --update nodejs npm
 
+RUN cd /var/www/html && composer install
+
 CMD ["/start.sh"]
