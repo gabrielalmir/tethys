@@ -1,4 +1,4 @@
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient, users } from "@prisma/client";
 import { BrasilApiService } from "./brasil-api";
 import { SmsService } from "./sms-api";
 import { WeatherService } from "./weather.api";
@@ -12,26 +12,30 @@ export class UserNotifier {
   ) {}
 
   async notifyUsers() {
-    const users = await this.prisma.user.findMany();
+    const users = await this.prisma.users.findMany();
 
     console.log(`Enviando SMS para ${users.length} usuários`);
 
     users.map(async (user) => {
-      console.log(`Enviando SMS para ${user.phoneNumber}`);
+      console.log(`Enviando SMS para ${user.phone}`);
       await this.notifyUser(user);
     });
   }
 
-  private async notifyUser(user: User) {
+  public async notifyUser(user: users) {
     try {
       this.validateUser(user);
 
-      const { postalCode, phoneNumber } = user;
+      const { postalcode, phone } = user;
 
-      console.log(`Buscando dados para o CEP ${postalCode}`);
+      console.log(`Buscando dados para o CEP ${postalcode}`);
+
+      if (!postalcode) {
+        throw new Error("CEP não encontrado");
+      }
 
       const { latitude, longitude } = await this.brasilApiService.getPostalCode(
-        postalCode
+        postalcode
       );
 
       if (!latitude || !longitude) {
@@ -52,29 +56,38 @@ export class UserNotifier {
         throw new Error("Não foi possível encontrar o índice de chuva");
       }
 
-      console.log(`Enviando SMS para ${phoneNumber}`);
+      console.log(`Enviando SMS para ${phone}`);
 
-      await this.smsService.sendSms(
-        phoneNumber,
-        `Olá! O índice de chuva na sua região é de ${rainfall} mm`
-      );
+      if (!phone) {
+        throw new Error("Número de telefone não encontrado");
+      }
 
-      console.log(`SMS enviado para ${phoneNumber}`);
+      let message = `Olá! O índice de chuva na sua região é de ${rainfall} mm`;
+
+      if (rainfall >= 30) {
+        message = `Olá! Cuidado! O índice de chuva na sua região é de ${rainfall} mm`;
+      } else if (rainfall >= 100) {
+        message = `Olá! Risco de enchente! O índice de chuva na sua região é de ${rainfall} mm`;
+      }
+
+      await this.smsService.sendSms(phone, message);
+
+      console.log(`SMS enviado para ${phone}`);
     } catch (error: any) {
       console.log(error.message);
     }
   }
 
-  private validateUser(user: User) {
+  private validateUser(user: users) {
     if (!user) {
       throw new Error("Usuário não encontrado");
     }
 
-    if (!user.postalCode) {
+    if (!user.postalcode) {
       throw new Error("CEP não encontrado");
     }
 
-    if (!user.phoneNumber) {
+    if (!user.phone) {
       throw new Error("Número de telefone não encontrado");
     }
   }

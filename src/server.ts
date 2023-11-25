@@ -7,6 +7,8 @@ import { SmsService } from "./services/sms-api";
 import { UserNotifier } from "./services/user-notifier";
 import { WeatherService } from "./services/weather.api";
 
+import { z } from 'zod';
+
 const app = fastify();
 
 const userNotifier = new UserNotifier(
@@ -18,16 +20,35 @@ const userNotifier = new UserNotifier(
 
 const EVERY_DAY = "0 0 * * *";
 
+const prisma = new PrismaClient();
+
 cron.schedule(EVERY_DAY, async () => {
   console.log("Iniciando notificação de usuários");
   await userNotifier.notifyUsers();
 });
 
 app.post('/notify', async (request, reply) => {
-  console.log("Iniciando notificação de usuários");
-  await userNotifier.notifyUsers()
-  reply.send('ok')
-})
+  const createNotificationSchema = z.object({
+    email: z.string().email(),
+  })
+
+  const { email } = createNotificationSchema.parse(request.body);
+
+  return queueUserNotification(email);
+});
+
+async function queueUserNotification(email: string) {
+  console.log(`Enviando notificação para ${email}`);
+  const user = await prisma.users.findFirst({ where: { email } });
+
+  if (!user) {
+    return { error: 'Usuário não encontrado' }
+  }
+
+  await userNotifier.notifyUser(user);
+
+  return { message: 'Notificação enviada com sucesso' }
+}
 
 app
   .listen({
