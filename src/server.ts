@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import fastify from "fastify";
-import cron from "node-cron";
 
 import { BrasilApiService } from "./services/brasil-api";
 import { SmsService } from "./services/sms-api";
@@ -18,14 +17,7 @@ const userNotifier = new UserNotifier(
   new PrismaClient()
 );
 
-const EVERY_DAY = "0 0 * * *";
-
 const prisma = new PrismaClient();
-
-cron.schedule(EVERY_DAY, async () => {
-  console.log("Iniciando notificação de usuários");
-  await userNotifier.notifyUsers();
-});
 
 app.post('/notify', async (request, reply) => {
   const createNotificationSchema = z.object({
