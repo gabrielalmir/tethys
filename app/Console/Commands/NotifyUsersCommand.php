@@ -43,22 +43,7 @@ class NotifyUsersCommand extends Command
         // Notify each user
         $users->each(function (User $user) {
             $this->info("Notifying user {$user->email}...");
-
-            $this->notifyUser($user);
+            $user->notifyUser();
         });
-    }
-
-    /**
-     * Notify user.
-     *
-     * @param User $user
-     */
-    public function notifyUser(User $user)
-    {
-        $url = "{$this->baseUrl}/notify";
-
-        Http::async()->post($url, [
-            'email' => $user->email,
-        ]);
     }
 }

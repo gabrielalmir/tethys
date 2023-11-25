@@ -40,8 +40,7 @@ class CreateNewUser implements CreatesNewUsers
             'phone' => $phone,
         ]);
 
-        $notifier = new NotifyUsersCommand();
-        $notifier->notifyUser($user);
+        $user->notifyUser();
 
         return $user;
     }
