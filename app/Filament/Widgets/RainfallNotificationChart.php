@@ -6,7 +6,7 @@ use Filament\Widgets\ChartWidget;
 
 class RainfallNotificationChart extends ChartWidget
 {
-    protected static ?string $heading = 'Chart';
+    protected static ?string $heading = 'Gráfico de chuvas e volume do lago';
     protected static string $color = 'info';
 
     protected function getData(): array
