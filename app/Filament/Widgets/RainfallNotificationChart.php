@@ -20,7 +20,7 @@ class RainfallNotificationChart extends ChartWidget
                 'to' => 0.5,
                 'loop' => true
             ]
-        ]
+        ],
     ];
 
     protected function getData(): array
