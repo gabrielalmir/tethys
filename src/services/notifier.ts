@@ -1,30 +1,12 @@
 import { PrismaClient, users } from "@prisma/client";
 import { BrasilApiService } from "./brasil-api";
 
-import { SmsService } from "./sms-api";
 import { WeatherService } from "./weather.api";
 
 import { InfluxDBClient, Point } from "@influxdata/influxdb3-client";
+import { NotificationService } from "../interfaces/notification-service";
 
-// Define an interface for the notification service
-interface NotificationService {
-  sendNotification(user: users, message: string): Promise<void>;
-}
-
-// Implement the SMS service
-export class SmsNotificationService implements NotificationService {
-  constructor(private smsService: SmsService) {}
-
-  async sendNotification(user: users, message: string): Promise<void> {
-    const { phone } = user;
-    if (!phone) {
-      throw new Error("Número de telefone não encontrado");
-    }
-    await this.smsService.sendSms(phone, message);
-  }
-}
-
-export class UserNotifier {
+export class Notifier {
   private influxdb: InfluxDBClient;
 
   constructor(

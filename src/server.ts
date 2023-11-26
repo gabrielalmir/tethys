@@ -4,10 +4,11 @@ import fastify from "fastify";
 import { fastifyCors } from "@fastify/cors";
 import { BrasilApiService } from "./services/brasil-api";
 import { SmsService } from "./services/sms-api";
-import { SmsNotificationService, UserNotifier } from "./services/user-notifier";
+import { SmsNotificationService } from "./services/sms-notification";
 import { WeatherService } from "./services/weather.api";
 
 import { z } from 'zod';
+import { Notifier } from "./services/notifier";
 
 const app = fastify();
 
@@ -38,7 +39,7 @@ app.post("/notify", async (request, reply) => {
 async function queueUserNotificationSms(email: string) {
   console.log(`Enfileirando notificação para ${email}`);
 
-  const userNotifier = new UserNotifier(
+  const notifier = new Notifier(
     brasilApiService,
     weatherService,
     smsNotificationService,
@@ -55,7 +56,7 @@ async function queueUserNotificationSms(email: string) {
     }
 
     // Notificar o usuário
-    await userNotifier.notifyUser(user);
+    await notifier.notifyUser(user);
 
     console.log(`Notificação enviada para ${email}`);
   });
