@@ -5,16 +5,19 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Mail\NotifyUserMail;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasApiTokens;
     use HasFactory;
@@ -67,6 +70,13 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return str_ends_with($this->email, '@tethys.com.br');
+    }
+
+
     public function notifyUser()
     {
         $url = "{$this->baseUrl}/notify";
@@ -76,6 +86,8 @@ class User extends Authenticatable
         ]);
 
         $this->notifyUserEmail();
+
+        Log::info("Notificação enviada para {$this->email}");
     }
 
     private function notifyUserEmail()
