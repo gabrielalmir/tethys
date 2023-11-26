@@ -9,8 +9,6 @@ class RainfallNotificationChart extends ChartWidget
     protected static ?string $heading = 'Gráfico de chuvas e volume do lago';
     protected static string $color = 'info';
 
-    protected static ?string $pollingInterval = '10s';
-
     protected static ?array $options = [
         'animations' => [
             'tension' => [
