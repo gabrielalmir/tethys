@@ -94,7 +94,7 @@ class User extends Authenticatable implements FilamentUser
     {
         Mail::to($this->email)->send(new NotifyUserMail([
             'from' => env('MAIL_FROM_ADDRESS'),
-            'from_name' => env('MAIL_FROM_NAME', 'Tethys'),
+            'from_name' => env('APP_NAME', 'Tethys'),
             'subject' => 'Alerta de alagamento na região de ' . $this->postalcode,
             'name' => $this->name,
         ]));
