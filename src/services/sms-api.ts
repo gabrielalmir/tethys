@@ -1,7 +1,7 @@
 export class SmsService {
   private baseURL = "https://tethys-sms.onrender.com";
 
-  constructor(private http: HttpClient) {}
+  constructor() {}
 
   async sendSms(phoneNumber: string, message: string) {
     const url = `${this.baseURL}/enviar-dados`;
@@ -11,7 +11,7 @@ export class SmsService {
     console.log(`Enviando SMS para ${localizedPhoneNumber}`)
     console.log(`Mensagem: ${message}`)
 
-    const response = await this.http(url, {
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
