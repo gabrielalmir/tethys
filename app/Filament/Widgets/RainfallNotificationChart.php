@@ -9,6 +9,20 @@ class RainfallNotificationChart extends ChartWidget
     protected static ?string $heading = 'Gráfico de chuvas e volume do lago';
     protected static string $color = 'info';
 
+    protected static ?string $pollingInterval = '10s';
+
+    protected static ?array $options = [
+        'animations' => [
+            'tension' => [
+                'duration' => 5000,
+                'easing' => 'linear',
+                'from' => 0,
+                'to' => 0.5,
+                'loop' => true
+            ]
+        ]
+    ];
+
     protected function getData(): array
     {
         $data = [
@@ -76,7 +90,7 @@ class RainfallNotificationChart extends ChartWidget
                     'backgroundColor' => 'rgba(255, 99, 132, 0.2)',
                     'borderColor' => 'rgb(255, 99, 132)',
                     'borderWidth' => 1,
-                    'hoverOffset' => 4
+                    'hoverOffset' => 4,
                 ],
                 [
                     'label' => 'Lake Volume',
