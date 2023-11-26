@@ -89,8 +89,10 @@ text-decoration: none;
                     <h3 class="masthead-brand">Tethys</h3>
                     <nav class="nav justify-content-center">
                         <a class="nav-link active" href="/">Início</a>
-                        @if (Auth::check())
-                        <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
+                        @if(str_ends_with(Auth::user()->email, '@tethys.com.br'))
+                            <a class="nav-link" href="/admin">Dashboard</a>
+                        @elseif (Auth::check())
+                            <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
                         @else
                         <a class="nav-link" href="{{ route('login') }}">Login</a>
                         @endif
