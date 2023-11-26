@@ -3,10 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Mail\NotifyUserMail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
@@ -71,5 +74,17 @@ class User extends Authenticatable
         Http::post($url, [
             'email' => $this->email,
         ]);
+
+        $this->notifyUserEmail();
+    }
+
+    private function notifyUserEmail()
+    {
+        Mail::to($this->email)->send(new NotifyUserMail([
+            'from' => env('MAIL_FROM_ADDRESS'),
+            'from_name' => env('MAIL_FROM_NAME', 'Tethys'),
+            'subject' => 'Alerta de alagamento na região de ' . $this->postalcode,
+            'name' => $this->name,
+        ]));
     }
 }
