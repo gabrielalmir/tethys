@@ -1,13 +1,12 @@
 import { PrismaClient, users } from "@prisma/client";
-import { BrasilApiService } from "./brasil-api";
+import { MongoClient, ServerApiVersion } from "mongodb";
 
+import { NotificationService } from "../interfaces/notification-service";
+import { BrasilApiService } from "./brasil-api";
 import { WeatherService } from "./weather.api";
 
-import { InfluxDBClient, Point } from "@influxdata/influxdb3-client";
-import { NotificationService } from "../interfaces/notification-service";
-
 export class Notifier {
-  private influxdb: InfluxDBClient;
+  private datalake: MongoClient;
 
   constructor(
     private brasilApiService: BrasilApiService,
@@ -15,9 +14,12 @@ export class Notifier {
     private notificationService: NotificationService,
     private prisma: PrismaClient
   ) {
-    this.influxdb = new InfluxDBClient({
-      host: process.env.INFLUXDB_HOST ?? "localhost",
-      token: process.env.INFLUXDB_TOKEN,
+    this.datalake = new MongoClient(process.env.MONGODB_URI as string, {
+      serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+      }
     });
   }
 
@@ -32,7 +34,7 @@ export class Notifier {
 
     console.log(`Notificações enviadas para ${users.length} usuários`);
 
-    this.influxdb.close();
+    this.datalake.close();
   }
 
   public async notifyUser(user: users) {
@@ -70,33 +72,47 @@ export class Notifier {
 
       console.log(`Enviando notificação para ${user.name}`);
 
-      const message = this.getNotificationMessage(user, rainfall, lakeVolume.volume);
+      const message = this.getNotificationMessage(
+        user,
+        rainfall,
+        lakeVolume.volume
+      );
 
       // Use the notification service to send the notification
       await this.notificationService.sendNotification(user, message);
 
       console.log(`Notificação enviada para ${user.name}`);
 
-      const points = [
-        Point.measurement("notifications")
-          .setStringField("postal_code", postalcode)
-          .setStringField("city", postalCodeData.city)
-          .setStringField("neighborhood", postalCodeData.neighborhood)
-          .setStringField("state", postalCodeData.state)
-          .setIntegerField("rainfall", rainfall)
-          .setIntegerField("lake_volume", lakeVolume.volume)
-          .setTimestamp(new Date()),
-      ];
+      this.datalake.connect()
+        .then(() => {
+          console.log("Conectado ao MongoDB");
+          const db = this.datalake.db("tethys");
+          const collection = db.collection("notifications");
+          const document = {
+            postal_code: postalcode,
+            city: postalCodeData.city,
+            neighborhood: postalCodeData.neighborhood,
+            state: postalCodeData.state,
+            rainfall,
+            lake_volume: lakeVolume.volume,
+            timestamp: new Date(),
+          };
 
-      this.influxdb
-        .write(points, "tethys")
-        .then(() => console.log("Dados enviados para o InfluxDB"));
+          collection.insertOne(document)
+            .then(() => console.log("Dados enviados para o MongoDB"))
+            .catch((error) => console.log(error.message));
+        })
+        .catch((error) => console.log(error.message));
     } catch (error: any) {
       console.log(error.message);
     }
   }
 
-  public getNotificationMessage(user: users, rainfall: number, lakeVolume: number) {
+  public getNotificationMessage(
+    user: users,
+    rainfall: number,
+    lakeVolume: number
+  ) {
     const { name, postalcode } = user;
 
     let message = `Olá, ${name}!`;
