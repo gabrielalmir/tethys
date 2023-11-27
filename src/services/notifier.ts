@@ -95,6 +95,7 @@ export class Notifier {
             state: postalCodeData.state,
             rainfall,
             lake_volume: lakeVolume.volume,
+            tag: tagCityNeightborhood,
             timestamp: new Date(),
           };
 
