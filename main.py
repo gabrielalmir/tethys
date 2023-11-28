@@ -12,7 +12,10 @@ from pydantic import BaseModel
 
 dotenv.load_dotenv()
 
-app = FastAPI()
+app = FastAPI(
+    title="Tethys",
+    description="API para notificação de chuvas",
+)
 
 brasil_api = BrasilApi()
 weather_api = WeatherService()
