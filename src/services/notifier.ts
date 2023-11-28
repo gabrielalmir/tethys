@@ -96,6 +96,8 @@ export class Notifier {
             rainfall,
             lake_volume: lakeVolume.volume,
             tag: tagCityNeightborhood,
+            latitude: postalCodeData.location.coordinates.latitude,
+            longitude: postalCodeData.location.coordinates.longitude,
             timestamp: new Date(),
           };
 
