@@ -7,7 +7,7 @@ app = FastAPI()
 
 load_dotenv()
 
-@app.post("/verificar-sms")
+@app.post("/verificar-wpp")
 async def verificar_sms(SID: str = Query(..., title="Message SID")):
     account_sid = os.getenv('ACCOUNT_SID1')
     auth_token = os.getenv('AUTH_TOKEN1')
