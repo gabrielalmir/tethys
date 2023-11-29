@@ -10,10 +10,10 @@ load_dotenv()
 
 @app.post("/enviar-msg")
 async def enviar_dados(numero: str = Form(...), texto: str = Form(...)):
-    # Log the values of numero and texto for debugging
+    # Log dos valores do numero e do texto para depuração
     
 
-    # Send SMS
+    # Enviar Menssagem
     message_sid = enviar_sms(numero, texto)
 
     return {"message_sid": message_sid}
@@ -34,7 +34,7 @@ def enviar_sms(numero, texto):
     # Corpo da mensagem
     message_body = texto
 
-    # Log the values of numero and texto before sending the SMS
+    # Log mostrando os valores antes de enviar a Menssagem
     print(f"Enviando Menssagem para {to_phone_number} com o texto : {message_body}")
 
     # Verificar se o corpo da mensagem não está vazio
@@ -48,7 +48,7 @@ def enviar_sms(numero, texto):
             )
 
             # Imprimir informações sobre o envio bem-sucedido
-            print(f"SMS enviado com sucesso, SID: {message.sid}")
+            print(f"Menssagem enviada com sucesso, SID: {message.sid}")
 
             # Retorna o SID da mensagem na resposta da API
             return {"message_sid": message.sid}
@@ -58,7 +58,7 @@ def enviar_sms(numero, texto):
             if e.code == 21211:
                 print(f"Não foi possível realizar a operação. Número de telefone inválido.")
             else:
-                print(f"Erro ao enviar o SMS: {e.msg}")
+                print(f"Erro ao enviar a Menssagem: {e.msg}")
             return {"error": "Erro ao enviar a Menssagem"}
 
     else:
