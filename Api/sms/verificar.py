@@ -14,14 +14,14 @@ async def verificar_sms(SID: str = Query(..., title="Message SID")):
 
     client = Client(account_sid, auth_token)
 
-    # Assuming enviar_sms returns the message SID as a string
-    mensagem_sid = SID  # Use the provided SID
+    
+    mensagem_sid = SID  
 
-    # Fetch the message details
+   
     mensagem = client.messages(mensagem_sid).fetch()
 
-    # Get the status of the message
+    # obtem o status da menssagem
     status = mensagem.status
 
-    # Returning the status in the response
+    # retornando o status na resposta
     return {"status_da_mensagem": status}

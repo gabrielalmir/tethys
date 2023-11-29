@@ -10,10 +10,10 @@ load_dotenv()
 
 @app.post("/enviar-dados")
 async def enviar_dados(numero: str = Form(...), texto: str = Form(...)):
-    # Log the values of numero and texto for debugging
+    
     
 
-    # Send SMS
+    # Enviar SMS
     message_sid = enviar_sms(numero, texto)
 
     return {"message_sid": message_sid}
@@ -33,7 +33,7 @@ def enviar_sms(numero, texto):
     # Corpo da mensagem
     message_body = texto
 
-    # Log the values of numero and texto before sending the SMS
+    # Log dos valores de  numero e texto antes de enviar o  SMS
     print(f"Sending SMS to {to_phone_number} with message: {message_body}")
 
     # Verificar se o corpo da mensagem não está vazio
