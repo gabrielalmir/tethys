@@ -28,8 +28,10 @@ class RainfallNotificationChart extends ChartWidget
     protected function getData(): array
     {
         $data = Http::get($this->baseUrl . '/' . $this->resource)->json();
-
-        ddd($data);
+        $data = array_map(function ($item) {
+            $item['created_at'] = date('Y-m-d H:i:s', strtotime($item['timestamp']['$date']));
+            return $item;
+        }, $data);
 
         return [
             'datasets' => [
