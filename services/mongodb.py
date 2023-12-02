@@ -11,3 +11,6 @@ class MongoService:
 
     def set_document(self, collection, document):
         self.client["tethys"][collection].insert_one(document)
+
+    def get_document(self, collection, query):
+        return self.client["tethys"][collection].find_one(query)
