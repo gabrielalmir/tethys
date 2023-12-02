@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for tethys on 2023-11-25T11:54:53-03:00
+# fly.toml app configuration file generated for tethys on 2023-12-02T15:26:03-03:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -10,7 +10,11 @@ console_command = "php /var/www/html/artisan tinker"
 [build]
   [build.args]
     NODE_VERSION = "18"
-    PHP_VERSION = "8.2"
+    PHP_VERSION = "8.3"
+
+[processes]
+  app = ""
+  cron = "cron -f"
 
 [env]
   APP_ENV = "production"
@@ -19,10 +23,6 @@ console_command = "php /var/www/html/artisan tinker"
   LOG_STDERR_FORMATTER = "Monolog\\Formatter\\JsonFormatter"
   SESSION_DRIVER = "cookie"
   SESSION_SECURE_COOKIE = "true"
-
-[processes]
-  app = ""
-  cron = "cron -f"
 
 [http_service]
   internal_port = 8080
