@@ -19,6 +19,12 @@ O objetivo desse documento é descrever o Projeto Integrador (PI) do 3º períod
 - <a href="https://github.com/cwilliam956">Celso William</a><br>
 Responsabilidades:Frontend,utilização do FrameWork Boostrap,responsividade do site,e utilização da linguagem javascript.<br>
 
+### Login de Administrador
+
+URL: https://tethys.fly.dev/admin/login
+E-mail: admin@tethys.com.br
+Senha: admin
+
 ## Introdução 📖
 
 O Projeto Pedagógico do Curso de Tecnologia em Desenvolvimento de Software Multiplataforma (DSM) da FATEC Itapira descreve o desenvolvimento de 6 Projetos Interdisciplinares (PIs), um em cada período do curso. O PI não é apenas uma junção de disciplinas, é, também, uma oportunidade de trabalho colaborativo entre os professores responsáveis pelas disciplinas, o coordenador do curso e os alunos. A aplicação das metodologias de ensino-aprendizagem baseadas em Projetos ou Problemas e a interdisciplinaridade auxiliarão no desenvolvimento das competências socioemocionais, tais como: autonomia, proatividade, trabalho em equipe, comunicação, resolução de problemas, entre outros. Cada PI constitui uma parte do Portifólio Digital do aluno, que será incrementado durante o curso.
