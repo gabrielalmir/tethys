@@ -3,21 +3,15 @@
 namespace App\Filament\Widgets;
 
 use Filament\Widgets\ChartWidget;
-use MongoDB\Driver\ServerApi;
+use Illuminate\Support\Facades\Http;
 
 class RainfallNotificationChart extends ChartWidget
 {
     protected static ?string $heading = 'Gráfico de chuvas e volume do lago';
     protected static string $color = 'info';
 
-    private \MongoDB\Client $mongoClient;
-
-    public function __construct() {
-        $mongoUri = getenv('MONGODB_URI', 'mongodb://localhost:27017');
-        $mongoApi = new ServerApi(ServerApi::V1);
-        $mongoClient = new \MongoDB\Client($mongoUri, [], ['serverApi' => $mongoApi]);
-        $this->mongoClient = $mongoClient;
-    }
+    private string $baseUrl = "https://task-alerta-alagamento.onrender.com";
+    private string $resource = "notifications";
 
     protected static ?array $options = [
         'animations' => [
@@ -31,31 +25,16 @@ class RainfallNotificationChart extends ChartWidget
         ],
     ];
 
-    private function fetchDataFromDatabase(): array
-    {
-        $collection = $this->mongoClient->selectDatabase('tethys')->selectCollection('notifications');
-        $cursor = $collection->find([], ['_id' => 0, 'rainfall' => 1, 'volume' => 1]);
-
-        $data = [];
-
-        foreach ($cursor as $document) {
-            $data[] = [
-                'rainfall' => $document['rainfall'],
-                'volume' => $document['volume'],
-            ];
-        }
-
-        return $data;
-    }
-
     protected function getData(): array
     {
-        $data = $this->fetchDataFromDatabase() ?? [];
+        $data = Http::get($this->baseUrl . '/' . $this->resource)->json();
+
+        ddd($data);
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Rainfall',
+                    'label' => 'Volume de chuva',
                     'data' => array_map(fn($item) => $item['rainfall'], $data),
                     'backgroundColor' => 'rgba(255, 99, 132, 0.2)',
                     'borderColor' => 'rgb(255, 99, 132)',
@@ -63,7 +42,7 @@ class RainfallNotificationChart extends ChartWidget
                     'hoverOffset' => 4,
                 ],
                 [
-                    'label' => 'Lake Volume',
+                    'label' => 'Volume do lago',
                     'data' => array_map(fn($item) => $item['lake_volume'], $data),
                     'backgroundColor' => 'rgba(54, 162, 235, 0.2)',
                     'borderColor' => 'rgb(54, 162, 235)',
@@ -71,7 +50,7 @@ class RainfallNotificationChart extends ChartWidget
                     'hoverOffset' => 4
                 ]
             ],
-            'labels' => array_map(fn($item) => $item['time'], $data),
+            'labels' => array_map(fn($item) => $item['created_at'], $data)
         ];
     }
 
