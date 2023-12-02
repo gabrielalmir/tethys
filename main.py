@@ -3,6 +3,8 @@ import asyncio
 import json
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 from services.notifier import Notifier
 from services.brasil_api import BrasilApi
 from services.weather_api import WeatherService
@@ -15,9 +17,23 @@ from bson import json_util
 
 dotenv.load_dotenv()
 
+origins = [
+    "https://tethys.fly.dev",
+    "http://localhost",
+    "http://localhost:8080",
+]
+
 app = FastAPI(
     title="Tethys",
     description="API para notificação de chuvas",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 brasil_api = BrasilApi()
