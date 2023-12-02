@@ -10,12 +10,12 @@ class RainfallNotificationChart extends ChartWidget
     protected static ?string $heading = 'Gráfico de chuvas e volume do lago';
     protected static string $color = 'info';
 
-    private MongoDB\Client $mongoClient;
+    private \MongoDB\Client $mongoClient;
 
     public function __construct() {
         $mongoUri = getenv('MONGODB_URI', 'mongodb://localhost:27017');
         $mongoApi = new ServerApi(ServerApi::V1);
-        $mongoClient = new MongoDB\Client($mongoUri, [], ['serverApi' => $mongoApi]);
+        $mongoClient = new \MongoDB\Client($mongoUri, [], ['serverApi' => $mongoApi]);
         $this->mongoClient = $mongoClient;
     }
 
