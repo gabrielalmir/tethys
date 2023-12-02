@@ -88,6 +88,11 @@ RUN rsync -ar /var/www/html/public-npm/ /var/www/html/public/ \
     && rm -rf /var/www/html/public-npm \
     && chown -R www-data:www-data /var/www/html/public
 
+RUN apt-get update && apt-get install -y \
+  php${PHP_VERSION}-mongodb  \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
 EXPOSE 8080
 
 ENTRYPOINT ["/entrypoint"]
