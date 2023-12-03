@@ -8,26 +8,6 @@
         "env": []
     },
     {
-        "id": "0d685ba7c12231fe",
-        "type": "mongodb3",
-        "uri": "${MONGODB_URI}",
-        "name": "tethys",
-        "options": "{ \"useUnifiedTopology\": true }",
-        "parallelism": "-1"
-    },
-    {
-        "id": "80909bdd9c3d4a33",
-        "type": "global-config",
-        "name": "global-config",
-        "env": [
-            {
-                "name": "MONGODB_URI",
-                "value": "mongodb+srv://tethys:AbkD6g4lQ2SQvWST@tethys-cluster-0.8ixlngp.mongodb.net/tethys?retryWrites=true&w=majority",
-                "type": "str"
-            }
-        ]
-    },
-    {
         "id": "620603ec75070d49",
         "type": "inject",
         "z": "f155b928bf7eb3ae",
@@ -194,7 +174,7 @@
         "finalize": "",
         "libs": [],
         "x": 1160,
-        "y": 460,
+        "y": 380,
         "wires": [
             [
                 "40de42c537fa3c5e"
@@ -231,7 +211,7 @@
             }
         ],
         "x": 1350,
-        "y": 460,
+        "y": 380,
         "wires": [
             [
                 "314821ef901c3bbb"
@@ -251,8 +231,45 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1510,
-        "y": 460,
+        "x": 1530,
+        "y": 380,
         "wires": []
+    },
+    {
+        "id": "f4ac2478553a032e",
+        "type": "inject",
+        "z": "f155b928bf7eb3ae",
+        "name": "Simulate Flooding",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "flooding",
+        "payload": "{\"rainfall\":{\"value\":101},\"lake\":{\"volume\":1}}",
+        "payloadType": "json",
+        "x": 930,
+        "y": 300,
+        "wires": [
+            [
+                "08959e38a92e4cd4"
+            ]
+        ]
+    },
+    {
+        "id": "0d685ba7c12231fe",
+        "type": "mongodb3",
+        "uri": "${MONGODB_URI}",
+        "name": "tethys",
+        "options": "{ \"useUnifiedTopology\": true }",
+        "parallelism": "-1"
     }
 ]
