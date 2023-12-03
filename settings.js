@@ -77,7 +77,7 @@ module.exports = {
        type: "credentials",
        users: [{
            username: "admin",
-           password: "$2a$08$DVyXu5GDXGiTwlBCtnDYeufXR2bvgkFGDnQ5i0udK/sIe5avA3QxS",
+           password: process.env.NODERED_PASSWORD,
            permissions: "*"
        }]
     },
