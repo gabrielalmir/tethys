@@ -186,7 +186,7 @@
         "type": "function",
         "z": "f155b928bf7eb3ae",
         "name": "Process Data",
-        "func": "const join = msg.payload;\nconst { lake, rainfall } = join;\n\nmsg.payload = {\n    email: \"gabr.almir@gmail.com\",\n    lake: lake.volume,\n    rainfall: rainfall.value,\n}\n\nreturn msg;",
+        "func": "const join = msg.payload;\nconst { lake, rainfall } = join;\n\nconst lakeVolume = lake.volume;\nconst rainfallValue = rainfall.value;\n\nlet status = \"normal\";\n\nif (lakeVolume > 60 && rainfallValue >= 30) {\n    status = \"danger\";\n} else if (rainfallValue >= 100) {\n    status = \"critical\";\n}\n\nmsg.payload = {\n    email: \"gabr.almir@gmail.com\",\n    lake: lakeVolume,\n    rainfall: rainfallValue,\n    status,\n}\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
