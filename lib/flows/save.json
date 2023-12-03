@@ -1,0 +1,246 @@
+[
+    {
+        "id": "f155b928bf7eb3ae",
+        "type": "tab",
+        "label": "Flooding Job",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "620603ec75070d49",
+        "type": "inject",
+        "z": "f155b928bf7eb3ae",
+        "name": "Cron Flooding",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "600",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "flooding",
+        "payload": "",
+        "payloadType": "date",
+        "x": 320,
+        "y": 460,
+        "wires": [
+            [
+                "a3892614b98d49e7",
+                "59522ffbd77bf679"
+            ]
+        ]
+    },
+    {
+        "id": "a3892614b98d49e7",
+        "type": "function",
+        "z": "f155b928bf7eb3ae",
+        "name": "Lake: Extract Data",
+        "func": "const volume = Math.random() * 100;\n\nmsg.topic = \"lake\";\n\nmsg.payload = {\n    latitude: -22.4388837, \n    longitude: -46.8052321,\n    volume,\n    sensorId: '1',\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 360,
+        "wires": [
+            [
+                "cf062e1bc1837191",
+                "9624615568e3ac4d"
+            ]
+        ]
+    },
+    {
+        "id": "cf062e1bc1837191",
+        "type": "mongodb3 in",
+        "z": "f155b928bf7eb3ae",
+        "service": "_ext_",
+        "configNode": "0d685ba7c12231fe",
+        "name": "Insert Lake",
+        "collection": "lakes",
+        "operation": "insertOne",
+        "x": 950,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "59522ffbd77bf679",
+        "type": "http request",
+        "z": "f155b928bf7eb3ae",
+        "name": "Fetch Rainfall",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://tethys-api-pluviometrico.onrender.com/weather/1,-22.4388837,-46.8052321",
+        "tls": "",
+        "persist": true,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 540,
+        "y": 560,
+        "wires": [
+            [
+                "1c707980f2b8837b"
+            ]
+        ]
+    },
+    {
+        "id": "1c707980f2b8837b",
+        "type": "function",
+        "z": "f155b928bf7eb3ae",
+        "name": "Rainfall: Extract Data",
+        "func": "const response = RED.util.cloneMessage(msg);\nconst result = response.payload[0];\nconst {value, unit} = result;\n\nmsg.topic = \"rainfall\";\n\nmsg.payload = {\n    value,\n    unit,\n    latitude: -22.4388837, \n    longitude: -46.8052321,\n    postalCode: '13971207',\n};\n\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 560,
+        "wires": [
+            [
+                "9624615568e3ac4d",
+                "467e7de763a6f7fa"
+            ]
+        ]
+    },
+    {
+        "id": "467e7de763a6f7fa",
+        "type": "mongodb3 in",
+        "z": "f155b928bf7eb3ae",
+        "service": "_ext_",
+        "configNode": "0d685ba7c12231fe",
+        "name": "Insert Rainfall",
+        "collection": "rainfalls",
+        "operation": "insertOne",
+        "x": 1000,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9624615568e3ac4d",
+        "type": "join",
+        "z": "f155b928bf7eb3ae",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "num",
+        "reduceFixup": "",
+        "x": 970,
+        "y": 460,
+        "wires": [
+            [
+                "08959e38a92e4cd4"
+            ]
+        ]
+    },
+    {
+        "id": "08959e38a92e4cd4",
+        "type": "function",
+        "z": "f155b928bf7eb3ae",
+        "name": "Process Data",
+        "func": "msg.payload = {\n    \"email\": \"gabr.almir@gmail.com\"\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1160,
+        "y": 460,
+        "wires": [
+            [
+                "40de42c537fa3c5e"
+            ]
+        ]
+    },
+    {
+        "id": "40de42c537fa3c5e",
+        "type": "http request",
+        "z": "f155b928bf7eb3ae",
+        "name": "Notify User",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "body",
+        "url": "https://task-alerta-alagamento.onrender.com/notify",
+        "tls": "",
+        "persist": true,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "application/json"
+            },
+            {
+                "keyType": "Accept",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "application/json"
+            }
+        ],
+        "x": 1350,
+        "y": 460,
+        "wires": [
+            [
+                "314821ef901c3bbb"
+            ]
+        ]
+    },
+    {
+        "id": "314821ef901c3bbb",
+        "type": "debug",
+        "z": "f155b928bf7eb3ae",
+        "name": "debug Data",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1510,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "0d685ba7c12231fe",
+        "type": "mongodb3",
+        "uri": "${MONGODB_URI}",
+        "name": "tethys",
+        "options": "{ \"useUnifiedTopology\": true }",
+        "parallelism": "-1"
+    }
+]

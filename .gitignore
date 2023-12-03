@@ -140,7 +140,10 @@ dist
 .pnp.*
 
 # Ignore Node-Red
-*.json
+.config.nodes.json
+.config.runtime.json
+.config.users.json
+flows.json
 
 ### Node Patch ###
 # Serverless Webpack directories
