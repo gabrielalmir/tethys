@@ -9,6 +9,9 @@ import (
 	"strings"
 )
 
+var SmsBaseURL = "https://tethys-sms.onrender.com"
+var SmsResource = "enviar-dados"
+
 type SmsService struct {
 	BaseURL  string
 	Resource string
