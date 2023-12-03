@@ -8,6 +8,26 @@
         "env": []
     },
     {
+        "id": "0d685ba7c12231fe",
+        "type": "mongodb3",
+        "uri": "${MONGODB_URI}",
+        "name": "tethys",
+        "options": "{ \"useUnifiedTopology\": true }",
+        "parallelism": "-1"
+    },
+    {
+        "id": "80909bdd9c3d4a33",
+        "type": "global-config",
+        "name": "global-config",
+        "env": [
+            {
+                "name": "MONGODB_URI",
+                "value": "mongodb+srv://tethys:AbkD6g4lQ2SQvWST@tethys-cluster-0.8ixlngp.mongodb.net/tethys?retryWrites=true&w=majority",
+                "type": "str"
+            }
+        ]
+    },
+    {
         "id": "620603ec75070d49",
         "type": "inject",
         "z": "f155b928bf7eb3ae",
@@ -166,7 +186,7 @@
         "type": "function",
         "z": "f155b928bf7eb3ae",
         "name": "Process Data",
-        "func": "msg.payload = {\n    \"email\": \"gabr.almir@gmail.com\"\n}\n\nreturn msg;",
+        "func": "const join = msg.payload;\nconst { lake, rainfall } = join;\n\nmsg.payload = {\n    email: \"gabr.almir@gmail.com\",\n    lake: lake.volume,\n    rainfall: rainfall.value,\n}\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -227,20 +247,12 @@
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
+        "complete": "true",
+        "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
         "x": 1510,
         "y": 460,
         "wires": []
-    },
-    {
-        "id": "0d685ba7c12231fe",
-        "type": "mongodb3",
-        "uri": "${MONGODB_URI}",
-        "name": "tethys",
-        "options": "{ \"useUnifiedTopology\": true }",
-        "parallelism": "-1"
     }
 ]
