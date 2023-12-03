@@ -12,20 +12,6 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func corsMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-
-		if r.Method == "OPTIONS" {
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
-}
-
 func main() {
 	godotenv.Load()
 
@@ -53,8 +39,8 @@ func main() {
 
 	server := web.NewServer(mongoInstance, database)
 
-	http.Handle("/notify", corsMiddleware(http.HandlerFunc(server.PostNotify)))
-	http.Handle("/notifications", corsMiddleware(http.HandlerFunc(server.GetNotifications)))
+	http.Handle("/notify", web.CorsMiddleware(http.HandlerFunc(server.PostNotify)))
+	http.Handle("/notifications", web.CorsMiddleware(http.HandlerFunc(server.GetNotifications)))
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", PORT), nil))
 }
