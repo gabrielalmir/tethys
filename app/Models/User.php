@@ -4,7 +4,6 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use App\Mail\NotifyUserMail;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -74,29 +73,5 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return str_ends_with($this->email, '@tethys.com.br');
-    }
-
-
-    public function notifyUser()
-    {
-        $url = "{$this->baseUrl}/notify";
-
-        Http::post($url, [
-            'email' => $this->email,
-        ]);
-
-        $this->notifyUserEmail();
-
-        Log::info("Notificação enviada para {$this->email}");
-    }
-
-    private function notifyUserEmail()
-    {
-        Mail::to($this->email)->send(new NotifyUserMail([
-            'from' => env('MAIL_FROM_ADDRESS'),
-            'from_name' => env('APP_NAME', 'Tethys'),
-            'subject' => 'Alerta de alagamento na região de ' . $this->postalcode,
-            'name' => $this->name,
-        ]));
     }
 }
