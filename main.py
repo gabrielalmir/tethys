@@ -24,7 +24,7 @@ def enviar_sms(numero, texto):
     client = Client(account_sid, auth_token)
 
     # Números de telefone
-    from_phone_number = "+12562516513"
+    from_phone_number = os.getenv('PHONE_NUMBER', '+18452432674')
     to_phone_number = numero
 
     # Corpo da mensagem
