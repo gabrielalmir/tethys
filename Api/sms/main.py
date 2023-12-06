@@ -8,10 +8,16 @@ app = FastAPI(debug=True)
 
 load_dotenv()
 
+PHONE_NUMBER = os.getenv('PHONE_NUMBER', '+18452432674')
+
+# Obter credenciais da Twilio do ambiente
+ACCOUNT_SID = os.getenv('ACCOUNT_SID1')
+AUTH_TOKEN = os.getenv('AUTH_TOKEN1')
+
 @app.post("/enviar-msg")
 async def enviar_dados(numero: str = Form(...), texto: str = Form(...)):
     # Log dos valores do numero e do texto para depuração
-    
+
 
     # Enviar Menssagem
     message_sid = enviar_sms(numero, texto)
@@ -19,14 +25,10 @@ async def enviar_dados(numero: str = Form(...), texto: str = Form(...)):
     return {"message_sid": message_sid}
 
 def enviar_sms(numero, texto):
-    # Obter credenciais da Twilio do ambiente
-    account_sid = os.getenv('ACCOUNT_SID1')
-    auth_token = os.getenv('AUTH_TOKEN1')
-
     # Criar cliente Twilio
-    client = Client(account_sid, auth_token)
+    client = Client(ACCOUNT_SID, AUTH_TOKEN)
 
-    # Números de telefone 
+    # Números de telefone
     from_phone_number = 'whatsapp:+14155238886'
     to_phone_number = f'whatsapp:+55{numero}'
 
@@ -65,6 +67,6 @@ def enviar_sms(numero, texto):
         # Se o corpo da mensagem estiver vazio
         print("O corpo da mensagem está vazio. Não é possível enviar a Menssagem.")
         return {"error": "O corpo da mensagem está vazio. Não é possível enviar a Menssagem."}
-    
+
 
 
