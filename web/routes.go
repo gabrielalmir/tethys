@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"task-alerta-alagamento/clients"
 	"task-alerta-alagamento/db"
 	"task-alerta-alagamento/dtos"
@@ -38,6 +39,7 @@ func (s *Server) PostNotify(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) NotifyUser(user db.User, notify dtos.Notify) {
 	smsService := clients.NewSmsService(clients.SmsBaseURL, clients.SmsResource)
+	brasilApiService := clients.NewBrasilApiService(clients.BrasilApiBaseURL)
 
 	message := fmt.Sprintf(
 		"Olá, %s. O nível do lago está em %.2f%% e a chuva está em %.2fmm.",
@@ -66,20 +68,26 @@ func (s *Server) NotifyUser(user db.User, notify dtos.Notify) {
 
 	smsService.Send(user.Phone, message)
 
+	cep, err := brasilApiService.GetCepV2(user.PostalCode)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	notification := db.NewNotification(
 		user.Email,
 		user.PostalCode,
-		"Blumenau",
-		"Centro",
-		"SC",
+		cep.City,
+		cep.Neighborhood,
+		cep.State,
 		notify.Rainfall,
 		notify.Lake,
-		"BLUMENAU_CENTRO",
-		"-26.9239862",
-		"-49.0641133",
+		fmt.Sprintf("%s_%s", strings.ToUpper(cep.City), strings.ToUpper(cep.Neighborhood)),
+		cep.Location.Coordinates.Latitude,
+		cep.Location.Coordinates.Longitude,
 	)
 
-	err := s.mongo.Insert("tethys", "notifications", notification)
+	err = s.mongo.Insert("tethys", "notifications", notification)
 
 	if err != nil {
 		log.Fatal(err)
