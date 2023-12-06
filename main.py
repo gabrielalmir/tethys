@@ -10,9 +10,6 @@ load_dotenv()
 
 @app.post("/enviar-dados")
 async def enviar_dados(numero: str = Form(...), texto: str = Form(...)):
-    
-    
-
     # Enviar SMS
     message_sid = enviar_sms(numero, texto)
 
@@ -64,6 +61,6 @@ def enviar_sms(numero, texto):
         # Se o corpo da mensagem estiver vazio
         print("O corpo da mensagem está vazio. Não é possível enviar o SMS.")
         return {"error": "O corpo da mensagem está vazio. Não é possível enviar o SMS."}
-    
+
 
 
