@@ -29,7 +29,7 @@ def enviar_sms(numero, texto):
     client = Client(ACCOUNT_SID, AUTH_TOKEN)
 
     # Números de telefone
-    from_phone_number = 'whatsapp:+14155238886'
+    from_phone_number = f'whatsapp:+{PHONE_NUMBER}'
     to_phone_number = f'whatsapp:+55{numero}'
 
 
