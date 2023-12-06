@@ -30,6 +30,7 @@ func main() {
 	}
 
 	clients.AwakeSmsService(clients.SmsBaseURL)
+	clients.AwakeSmsService(clients.WhatsAppBaseURL)
 
 	database := db.NewDatabase(DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD)
 	mongoInstance, err := db.NewMongo(MONGODB_URI)

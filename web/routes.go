@@ -39,6 +39,7 @@ func (s *Server) PostNotify(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) NotifyUser(user db.User, notify dtos.Notify) {
 	smsService := clients.NewSmsService(clients.SmsBaseURL, clients.SmsResource)
+	whatsappService := clients.NewWhatsAppService(clients.WhatsAppBaseURL, clients.WhatsAppResource)
 	brasilApiService := clients.NewBrasilApiService(clients.BrasilApiBaseURL)
 
 	message := fmt.Sprintf(
@@ -66,7 +67,8 @@ func (s *Server) NotifyUser(user db.User, notify dtos.Notify) {
 		)
 	}
 
-	smsService.Send(user.Phone, message)
+	go smsService.Send(user.Phone, message)
+	go whatsappService.Send(user.Phone, message)
 
 	cep, err := brasilApiService.GetCepV2(user.PostalCode)
 
